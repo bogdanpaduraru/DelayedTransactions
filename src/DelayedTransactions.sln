@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30621.155
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DelayedTransactions", "DelayedTransactions\DelayedTransactions.csproj", "{67176C5F-5B25-42C4-8B57-DA61447AFEAF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DelayedTransactions", "DelayedTransactions\DelayedTransactions.csproj", "{67176C5F-5B25-42C4-8B57-DA61447AFEAF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DelayedTransactions.UnitTests", "..\test\DelayedTransactions.UnitTests\DelayedTransactions.UnitTests.csproj", "{9448A136-A39E-4A89-8351-F1E652227564}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{67176C5F-5B25-42C4-8B57-DA61447AFEAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{67176C5F-5B25-42C4-8B57-DA61447AFEAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{67176C5F-5B25-42C4-8B57-DA61447AFEAF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9448A136-A39E-4A89-8351-F1E652227564}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9448A136-A39E-4A89-8351-F1E652227564}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9448A136-A39E-4A89-8351-F1E652227564}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9448A136-A39E-4A89-8351-F1E652227564}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

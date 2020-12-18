@@ -1,4 +1,5 @@
-﻿using DelayedTransactions.Models;
+﻿using DelayedTransactions.Exceptions;
+using DelayedTransactions.Models;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 using System;
@@ -16,6 +17,7 @@ namespace DelayedTransactions.Services
         public TransactionsService(IDatabaseSettings dbSettings)
         {
             var client = new MongoClient(dbSettings.ConnectionString);
+            
             var database = client.GetDatabase(dbSettings.DatabaseName);
 
             _startedTransactions = database.GetCollection<StartedTransaction>(dbSettings.StartedTransactionsCollectionName);

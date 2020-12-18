@@ -27,40 +27,30 @@ namespace DelayedTransactions.Controllers
         [HttpGet]
         public async Task<ActionResult<List<AvailableTransaction>>> GetAvailableTransactions()
         {
-            return await _transactionsService.GetAvailableTransactions();
-        }
-
-        [HttpGet("{itemOfferId}/{tokenOfferId}")]
-        public async Task<ActionResult<AvailableTransaction>> GetAvailableTransaction(Guid itemOfferId, Guid tokenOfferId)
-        {
-            //TODO: body checks
-            return await _transactionsService.GetAvailableTransaction(itemOfferId, tokenOfferId);
+            var result = await _transactionsService.GetAvailableTransactions();
+            return result;
         }
 
         [HttpPost("start")]
         public async Task<ActionResult<StartedTransaction>> StartTransaction([FromBody] TransactionBodyRequest body)
         {
-            if(body == null)
-            {
-                return BadRequest();
-            }
-
             var result = await _transactionsService.GetAvailableTransaction(body.ItemOfferId, body.TokenOfferId);
             AvailableTransaction availableTransaction = result.Value;
             if (availableTransaction == null)
             {
-                return NotFound();
+                return StatusCode(
+                    (int)HttpStatusCode.NotFound,
+                    "Cannot find transaction for given data"
+                    );
             }
 
             var startedTransaction = await _transactionsService.GetStartedTransaction(
                 availableTransaction.ItemOfferId, availableTransaction.TokenOfferId);
             if(startedTransaction.Value != null)
             {
-                return new ContentResult()
-                {
-                    StatusCode = (int)HttpStatusCode.Forbidden,
-                    Content = "Transaction already started"
-                };
+                return StatusCode(
+                    (int)HttpStatusCode.Forbidden,
+                    "Transaction already failed");
             }
 
             //TODO: validate that transaction is OK
@@ -75,39 +65,38 @@ namespace DelayedTransactions.Controllers
 
             await _transactionsService.InsertStartedTransaction(newStartedTransaction);
 
-            return newStartedTransaction;
+            return StatusCode(
+                (int)HttpStatusCode.OK,
+                newStartedTransaction);
         }
 
         [HttpPost("finish")]
-        public async Task<IActionResult> FinishTransaction([FromBody] TransactionBodyRequest body)
+        public async Task<ActionResult<Guid>> FinishTransaction([FromBody] TransactionBodyRequest body)
         {
-            if(body == null)
-            {
-                return BadRequest();
-            }
-
             var result = await _transactionsService.GetStartedTransaction(body.ItemOfferId, body.TokenOfferId);
             StartedTransaction startedTransaction = result.Value;
 
             if(startedTransaction == null)
             {
-                return NotFound();
+                return StatusCode(
+                    (int)HttpStatusCode.NotFound,
+                    "Transaction not found");
             }
 
             if(startedTransaction.EndTime > DateTime.UtcNow)
             {
-                return new ContentResult()
-                {
-                    StatusCode = (int)HttpStatusCode.Forbidden,
-                    Content = "Transaction not finished"
-                };
+                return StatusCode(
+                    (int)HttpStatusCode.Forbidden,
+                    "Transaction not finished");
             }
 
             await _storeService.ConsumeOffer(startedTransaction.ItemOfferId);
 
             await _transactionsService.RemoveStartedTransaction(startedTransaction);
 
-            return NoContent();
+            return StatusCode(
+                (int)HttpStatusCode.OK,
+                startedTransaction.Id);
         }
     }
 }
